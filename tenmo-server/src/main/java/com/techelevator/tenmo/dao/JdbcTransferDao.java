@@ -1,11 +1,14 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
-public class JdbcTransferDao implements TransferDao{
+public class JdbcTransferDao implements TransferDao, AccountDao {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -32,5 +35,30 @@ public class JdbcTransferDao implements TransferDao{
     @Override
     public int getTransferStatus(int transfer_id) {
         return 0;
+    }
+
+    @Override
+    public void createAccount(Account account, int accountId) {
+
+    }
+
+    @Override
+    public Account getAccount(int accountId) {
+        return null;
+    }
+
+    @Override
+    public Account getAccountByUserId(int userId) {
+        return null;
+    }
+
+    @Override
+    public BigDecimal getBalanceByAccountId(int accountId) {
+        return null;
+    }
+
+    @Override
+    public BigDecimal getBalanceByUserId(int userId) {
+        return null;
     }
 }
