@@ -15,6 +15,7 @@ import java.util.List;
 @Component
 public class JdbcUserDao implements UserDao {
 
+    private static final BigDecimal STARTING_BALANCE = new BigDecimal(1000);
     private JdbcTemplate jdbcTemplate;
 
     public JdbcUserDao(JdbcTemplate jdbcTemplate) {
@@ -72,7 +73,7 @@ public class JdbcUserDao implements UserDao {
         String sql2 = "INSERT INTO account (user_id, balance) VALUES (?, ?) RETURNING account_id";
         Integer newAccountId;
         try {
-            newAccountId = jdbcTemplate.queryForObject(sql2, Integer.class, newUserId, 1000);
+            newAccountId = jdbcTemplate.queryForObject(sql2, Integer.class, newUserId, STARTING_BALANCE);
         } catch (DataAccessException e){
             return false;
         }
