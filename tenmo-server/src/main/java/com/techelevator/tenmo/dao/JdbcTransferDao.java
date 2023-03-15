@@ -3,23 +3,32 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Component
-public class JdbcTransferDao implements TransferDao, AccountDao {
+public class JdbcTransferDao implements TransferDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcTransferDao(JdbcTemplate jdbcTemplate){
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public void createTransfer(Transfer transfer) {
+    public String createTransfer(Transfer transfer) {
+        if (transfer.getToAccountId() == transfer.getFromAccountId()) {
+            return "Error! Cannot send money to yourself.";
+
+        } else if (transfer.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            return "You have to send an amount greater than zero.";
+        }
         String sql = "INSERT INTO transfer (to_account_id, from_account_id, amount, status_id) VALUES (?, ?, ?, ?);";
         jdbcTemplate.update(sql, transfer.getToAccountId(), transfer.getFromAccountId(), transfer.getAmount(), transfer.getStatus_id());
+
+        return "Transfer Successful!";
     }
 
     @Override
@@ -37,28 +46,25 @@ public class JdbcTransferDao implements TransferDao, AccountDao {
         return 0;
     }
 
-    @Override
-    public void createAccount(Account account, int accountId) {
 
-    }
+    public Transfer mapRowToTransfer(SqlRowSet results) {
+        Transfer transfer = new Transfer();
 
-    @Override
-    public Account getAccount(int accountId) {
-        return null;
-    }
+        int transfer_id = results.getInt("transfer_id");
+        transfer.setTransferId(transfer_id);
 
-    @Override
-    public Account getAccountByUserId(int userId) {
-        return null;
-    }
+        int from_account_id = results.getInt("from_account_id");
+        transfer.setFromAccountId(from_account_id);
 
-    @Override
-    public BigDecimal getBalanceByAccountId(int accountId) {
-        return null;
-    }
+        int to_account_id = results.getInt("to_account_id");
+        transfer.setToAccountId(to_account_id);
 
-    @Override
-    public BigDecimal getBalanceByUserId(int userId) {
-        return null;
+        BigDecimal amount = results.getBigDecimal("amount");
+        transfer.setAmount(amount);
+
+        int status_id = results.getInt("status_id");
+        transfer.setStatus_id(status_id);
+
+        return transfer;
     }
 }

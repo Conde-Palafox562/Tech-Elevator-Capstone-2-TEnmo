@@ -1,11 +1,13 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Component
 public class JdbcAccountDao implements AccountDao {
@@ -29,8 +31,17 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public Account getAccountByUserId(int userId) {
+        Account account = null;
 
-        return null;
+        String sql = "SELECT account_id, user_id, balance FROM account WHERE user_id = ?;";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+
+        if(results.next()) {
+            account = mapRowToAccount(results);
+        }
+
+        return account;
     }
 
     @Override
@@ -48,5 +59,40 @@ public class JdbcAccountDao implements AccountDao {
     public BigDecimal getBalanceByUserId(int userId) {
 
         return null;
+    }
+
+    public BigDecimal addToBalance(BigDecimal amount, int accountId) {
+
+        String sql = "UPDATE account SET balance = balance + ? WHERE account_id = ? RETURNING balance;";
+
+        BigDecimal newBalance = jdbcTemplate.queryForObject(sql, BigDecimal.class, amount, accountId);
+
+        return newBalance;
+    }
+
+    public BigDecimal subtractFromBalance(BigDecimal amount, int accountId) {
+
+        String sql = "UPDATE account SET balance = balance - ? WHERE account_id = ? RETURNING balance;";
+
+        BigDecimal newBalance = jdbcTemplate.queryForObject(sql, BigDecimal.class, amount, accountId);
+
+        return newBalance;
+    }
+
+    
+
+    public Account mapRowToAccount (SqlRowSet results) {
+        Account account = new Account();
+
+        int userId = results.getInt("user_id");
+        account.setUserId(userId);
+
+        int accountId = results.getInt("account_id");
+        account.setAccountId(accountId);
+
+        BigDecimal balance = results.getBigDecimal("balance");
+        account.setBalance(balance);
+
+        return account;
     }
 }
