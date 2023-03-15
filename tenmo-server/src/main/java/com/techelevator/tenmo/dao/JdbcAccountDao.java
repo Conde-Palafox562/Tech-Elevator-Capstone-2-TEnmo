@@ -41,10 +41,7 @@ public class JdbcAccountDao implements AccountDao {
         BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, accountId);
 
         return balance;
-<<<<<<< HEAD
-        
-=======
->>>>>>> 9ad3d75bc440b6a88be418b47e991f365484c500
+
     }
 
     @Override
