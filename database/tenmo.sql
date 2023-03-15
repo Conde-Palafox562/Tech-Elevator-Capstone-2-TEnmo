@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
 
-DROP TABLE IF EXISTS tenmo_user, account;
+DROP TABLE IF EXISTS transfer, account, tenmo_user;
 
 DROP SEQUENCE IF EXISTS seq_user_id, seq_account_id;
 
@@ -31,6 +31,16 @@ CREATE TABLE account (
 	balance decimal(13, 2) NOT NULL,
 	CONSTRAINT PK_account PRIMARY KEY (account_id),
 	CONSTRAINT FK_account_tenmo_user FOREIGN KEY (user_id) REFERENCES tenmo_user (user_id)
+);
+	
+CREATE TABLE transfer (
+	transfer_id serial NOT NULL,
+	to_user_id int NOT NULL,
+	from_user_id int NOT NULL,
+	amount decimal(13, 2) NOT NULL,
+	status boolean NOT NULL DEFAULT 'true',
+	CONSTRAINT PK_transfer PRIMARY KEY (transfer_id),
+	CONSTRAINT fk_transfer_tenmo_user FOREIGN KEY (to_user_id) REFERENCES tenmo_user (user_id)
 );
 
 
