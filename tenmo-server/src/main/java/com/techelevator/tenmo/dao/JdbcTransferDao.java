@@ -34,8 +34,8 @@ public class JdbcTransferDao implements TransferDao {
         } else if (amount.compareTo(BigDecimal.ZERO) < 0){
             return "You have to send an amount greater than zero.";
         }
-        String sql = "INSERT INTO transfer (to_account_id, from_account_id, amount) VALUES (?, ?, ?);";
-        jdbcTemplate.update(sql, toAccountId, fromAccountId, amount);
+        String sql = "INSERT INTO transfer (to_account_id, from_account_id, amount, transfer_status_id, transfer_type_id) VALUES (?, ?, ?, ?, ?);";
+        jdbcTemplate.update(sql, toAccountId, fromAccountId, amount, 2, 1);
 
         String sql1 = "Insert INTO transfer_status (transfer_status_desc) VALUES (?);";
         jdbcTemplate.update(sql1, initialStatus);

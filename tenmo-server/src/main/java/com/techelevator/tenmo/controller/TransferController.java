@@ -40,6 +40,9 @@ public class TransferController {
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
     public HttpStatus createTransfer(@RequestBody Transfer transfer){
+        if(transfer.getAmount().compareTo(accountDao.getBalanceByAccountId(transfer.getFromAccountId())) < 0){
+            return HttpStatus.BAD_REQUEST;
+        }
         transferDao.createTransfer(transfer.getToAccountId(), transfer.getFromAccountId(), transfer.getAmount(), accountDao.getBalanceByAccountId(transfer.getFromAccountId()));
         accountDao.addToBalance(transfer.getAmount(), transfer.getToAccountId());
         accountDao.subtractFromBalance(transfer.getAmount(), transfer.getFromAccountId());
