@@ -21,7 +21,7 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public String createTransfer(Transfer transfer) {
         if (transfer.getToAccountId() == transfer.getFromAccountId()) {
-            return "Error! Cannot send money to yourself.";
+            return "Error! You cannot send money to yourself!";
 
         } else if (transfer.getAmount().compareTo(BigDecimal.ZERO) < 0) {
             return "You have to send an amount greater than zero.";
