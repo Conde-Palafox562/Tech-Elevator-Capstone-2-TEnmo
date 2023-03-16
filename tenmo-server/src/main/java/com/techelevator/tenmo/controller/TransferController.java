@@ -39,8 +39,10 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public HttpStatus createTransfer(@RequestBody int toAccountId, int fromAccountId, BigDecimal amount){
-        transferDao.createTransfer(toAccountId, fromAccountId, amount);
+    public HttpStatus createTransfer(@RequestBody Transfer transfer){
+        transferDao.createTransfer(transfer.getToAccountId(), transfer.getFromAccountId(), transfer.getAmount(), accountDao.getBalanceByAccountId(transfer.getFromAccountId()));
+        accountDao.addToBalance(transfer.getAmount(), transfer.getToAccountId());
+        accountDao.subtractFromBalance(transfer.getAmount(), transfer.getFromAccountId());
         return HttpStatus.CREATED;
     }
 
