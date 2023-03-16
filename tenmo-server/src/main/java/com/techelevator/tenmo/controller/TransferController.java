@@ -6,6 +6,7 @@ import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,14 +40,18 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public HttpStatus createTransfer(@RequestBody Transfer transfer){
-        if(transfer.getAmount().compareTo(accountDao.getBalanceByAccountId(transfer.getFromAccountId())) < 0){
-            return HttpStatus.BAD_REQUEST;
+    public String createTransfer(@RequestBody Transfer transfer){
+        if(transfer.getAmount().compareTo(accountDao.getBalanceByAccountId(transfer.getFromAccountId())) >= 0){
+            return "Transfer amount cannot exceed current balance.";
+        } else if(transfer.getFromAccountId() == transfer.getToAccountId()){
+            return "Error! You cannot send money to yourself!";
+        } else if (transfer.getAmount().compareTo(BigDecimal.ZERO) <= 0){
+            return "You have to send an amount greater than zero.";
         }
         transferDao.createTransfer(transfer.getToAccountId(), transfer.getFromAccountId(), transfer.getAmount(), accountDao.getBalanceByAccountId(transfer.getFromAccountId()));
         accountDao.addToBalance(transfer.getAmount(), transfer.getToAccountId());
         accountDao.subtractFromBalance(transfer.getAmount(), transfer.getFromAccountId());
-        return HttpStatus.CREATED;
+        return "Transfer Successfully Created and Sent!";
     }
 
 }

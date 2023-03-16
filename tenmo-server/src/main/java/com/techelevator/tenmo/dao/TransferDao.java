@@ -8,5 +8,5 @@ public interface TransferDao {
     public Transfer getTransfer(int transferId);
     public Transfer getTransferByAccountId(int account_id);
     public int getTransferStatus(int transfer_id);
-    public String createTransfer(int toAccountId, int fromAccountId, BigDecimal amount, BigDecimal currentBalance);
+    public void createTransfer(int toAccountId, int fromAccountId, BigDecimal amount, BigDecimal currentBalance);
 }

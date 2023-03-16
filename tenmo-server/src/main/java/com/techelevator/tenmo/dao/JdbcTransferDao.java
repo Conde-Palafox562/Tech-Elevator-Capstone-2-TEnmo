@@ -27,23 +27,9 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public String createTransfer(int toAccountId, int fromAccountId, BigDecimal amount, BigDecimal currentBalance) {
-
-        if(fromAccountId == toAccountId){
-            return "Error! You cannot send money to yourself!";
-        } else if (amount.compareTo(BigDecimal.ZERO) < 0){
-            return "You have to send an amount greater than zero.";
-        }
+    public void createTransfer(int toAccountId, int fromAccountId, BigDecimal amount, BigDecimal currentBalance) {
         String sql = "INSERT INTO transfer (to_account_id, from_account_id, amount, transfer_status_id, transfer_type_id) VALUES (?, ?, ?, ?, ?);";
         jdbcTemplate.update(sql, toAccountId, fromAccountId, amount, 2, 1);
-
-        String sql1 = "Insert INTO transfer_status (transfer_status_desc) VALUES (?);";
-        jdbcTemplate.update(sql1, initialStatus);
-
-        String sql2 = "INSERT INTO transfer_type (transfer_type_desc) VALUES (?);";
-        jdbcTemplate.update(sql2, transferSend);
-
-        return "Transfer Created and Sent!";
     }
 
 
