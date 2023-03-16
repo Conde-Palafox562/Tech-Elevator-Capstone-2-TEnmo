@@ -79,7 +79,7 @@ public class JdbcAccountDao implements AccountDao {
         return newBalance;
     }
 
-    
+
 
     public Account mapRowToAccount (SqlRowSet results) {
         Account account = new Account();

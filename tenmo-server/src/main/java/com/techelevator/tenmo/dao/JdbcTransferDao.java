@@ -14,6 +14,7 @@ public class JdbcTransferDao implements TransferDao {
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
+
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -26,7 +27,7 @@ public class JdbcTransferDao implements TransferDao {
             return "You have to send an amount greater than zero.";
         }
         String sql = "INSERT INTO transfer (to_account_id, from_account_id, amount, status_id) VALUES (?, ?, ?, ?);";
-        jdbcTemplate.update(sql, transfer.getToAccountId(), transfer.getFromAccountId(), transfer.getAmount(), transfer.getStatus_id());
+        jdbcTemplate.update(sql, transfer.getToAccountId(), transfer.getFromAccountId(), transfer.getAmount(), transfer.getTransferStatusId());
 
         return "Transfer Successful!";
     }
@@ -53,6 +54,12 @@ public class JdbcTransferDao implements TransferDao {
         int transfer_id = results.getInt("transfer_id");
         transfer.setTransferId(transfer_id);
 
+        int transfer_type_id = results.getInt("transfer_type_id");
+        transfer.setTransferTypeId(transfer_type_id);
+
+        int transfer_status_id = results.getInt("transfer_status_id");
+        transfer.setTransferStatusId(transfer_status_id);
+
         int from_account_id = results.getInt("from_account_id");
         transfer.setFromAccountId(from_account_id);
 
@@ -61,9 +68,6 @@ public class JdbcTransferDao implements TransferDao {
 
         BigDecimal amount = results.getBigDecimal("amount");
         transfer.setAmount(amount);
-
-        int status_id = results.getInt("status_id");
-        transfer.setStatus_id(status_id);
 
         return transfer;
     }
