@@ -29,15 +29,17 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public String createTransfer(Transfer transfer) {
-        if (transfer.getToAccountId() == transfer.getFromAccountId()) {
-            return "Error! You cannot send money to yourself!";
+    public String createTransfer(int toAccountId, int fromAccountId, BigDecimal amount) {
 
-        } else if (transfer.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+        if(fromAccountId == toAccountId){
+            return "Error! You cannot send money to yourself!";
+        } else if (amount.compareTo(BigDecimal.ZERO) < 0){
             return "You have to send an amount greater than zero.";
+        } else if (accountDao.getBalanceByUserId(fromAccountId).compareTo(amount) < 0){
+            return "Balance cannot be negative.";
         }
-        String sql = "INSERT INTO transfer (to_account_id, from_account_id, amount, transfer_status_id) VALUES (?, ?, ?, ?);";
-        jdbcTemplate.update(sql, transfer.getToAccountId(), transfer.getFromAccountId(), transfer.getAmount(), transfer.getTransferStatusId());
+        String sql = "INSERT INTO transfer (to_account_id, from_account_id, amount) VALUES (?, ?, ?);";
+        jdbcTemplate.update(sql, toAccountId, fromAccountId, amount);
 
         String sql1 = "Insert INTO transfer_status (transfer_status_desc) VALUES (?);";
         jdbcTemplate.update(sql1, initialStatus);
@@ -45,12 +47,13 @@ public class JdbcTransferDao implements TransferDao {
         String sql2 = "INSERT INTO transfer_type (transfer_type_desc) VALUES (?);";
         jdbcTemplate.update(sql2, transferSend);
 
-        accountDao.addToBalance(transfer.getAmount(), transfer.getToAccountId());
+        accountDao.addToBalance(amount, toAccountId);
 
-        accountDao.subtractFromBalance(transfer.getAmount(), transfer.getFromAccountId());
+        accountDao.subtractFromBalance(amount, fromAccountId);
 
-        return "Transfer Successful!";
+        return "Transfer Created and Sent!";
     }
+
 
     @Override
     public Transfer getTransfer(int transferId) {
@@ -72,6 +75,7 @@ public class JdbcTransferDao implements TransferDao {
     public int getTransferStatus(int transfer_id) {
         return 0;
     }
+
 
     public List<Transfer> getTransferListByAccountId(int userId){
 

@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @PreAuthorize("isAuthenticated()")
 @RestController
 public class TransferController {
@@ -36,8 +38,8 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public HttpStatus createTransfer(@RequestBody Transfer transfer){
-        transferDao.createTransfer(transfer);
+    public HttpStatus createTransfer(@RequestBody int toAccountId, int fromAccountId, BigDecimal amount){
+        transferDao.createTransfer(toAccountId, fromAccountId, amount);
         return HttpStatus.CREATED;
     }
 
