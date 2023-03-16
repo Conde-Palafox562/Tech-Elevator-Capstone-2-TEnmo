@@ -1,33 +1,44 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import java.math.BigDecimal;
+import org.springframework.web.bind.annotation.*;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
 public class TransferController {
 
+    private JdbcTransferDao jdbcTransferDao;
     private AccountDao accountDao;
     private TransferDao transferDao;
     private UserDao userDao;
-    private static final int APPROVED = 1;
-    private static final int SEND = 2;
 
-    public TransferController (AccountDao accountDao, TransferDao transferDao, UserDao userDao) {
+    public TransferController (AccountDao accountDao, TransferDao transferDao, UserDao userDao, JdbcTransferDao jdbcTransferDao) {
         this.accountDao = accountDao;
         this.transferDao = transferDao;
         this.userDao = userDao;
+        this.jdbcTransferDao = jdbcTransferDao;
     }
+
+    @RequestMapping(path = "/transfer/{transferId}", method = RequestMethod.GET)
+    public Transfer getTransferById(@PathVariable int transferId){
+        return transferDao.getTransfer(transferId);
+    }
+
+    @RequestMapping(path = "/accounts/{accountId}", method = RequestMethod.GET)
+    public Transfer getTransferByAccountId(@PathVariable int accountId){
+        return transferDao.getTransferByAccountId(accountId);
+    }
+
+    @RequestMapping(path = "/transfer", method = RequestMethod.POST)
+    public HttpStatus createTransfer(@RequestBody Transfer transfer){
+        transferDao.createTransfer(transfer);
+        return HttpStatus.CREATED;
+    }
+
 }
