@@ -84,8 +84,8 @@ public class TransferController {
         return "Transfer Successfully Rejected";
     }
 
-    @RequestMapping(path = "/mytransfers", method = RequestMethod.GET)
-    public List<Transfer> getTransferListByAccountId(int accountId) {
+    @RequestMapping(path = "/mytransfers/{accountId}", method = RequestMethod.GET)
+    public List<Transfer> getTransferListByAccountId(@PathVariable int accountId) {
         List<Transfer> nullList = new ArrayList<>();
         nullList = jdbcTransferDao.getTransferListByAccountId(accountId);
         return nullList;
