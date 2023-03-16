@@ -7,14 +7,17 @@ public class Authority {
    private String name;
 
    public String getName() {
+
       return name;
    }
 
    public void setName(String name) {
+
       this.name = name;
    }
 
    public Authority(String name) {
+
       this.name = name;
    }
 
@@ -28,6 +31,7 @@ public class Authority {
 
    @Override
    public int hashCode() {
+
       return Objects.hash(name);
    }
 
