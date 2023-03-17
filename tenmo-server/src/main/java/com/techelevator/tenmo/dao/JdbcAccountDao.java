@@ -63,7 +63,9 @@ public class JdbcAccountDao implements AccountDao {
         SqlRowSet results = null;
         BigDecimal balance = null;
         results = jdbcTemplate.queryForRowSet(sql, userId);
-        balance = results.getBigDecimal("balance");
+        if(results.next()){
+            balance = results.getBigDecimal("balance");
+        }
         return balance;
 
     }
