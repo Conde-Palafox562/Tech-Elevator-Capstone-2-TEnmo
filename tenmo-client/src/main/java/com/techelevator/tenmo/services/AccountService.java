@@ -13,17 +13,17 @@ public class AccountService {
 
     private RestTemplate restTemplate = new RestTemplate();
     private AuthenticatedUser currentUser;
-    private String BASE_URL;
+    private String baseUrl;
 
     public AccountService(String url, AuthenticatedUser currentUser){
         this.currentUser = currentUser;
-        BASE_URL = url;
+        this.baseUrl = url;
     }
 
     public BigDecimal getBalance(){
         BigDecimal balance = new BigDecimal(0);
         try{
-            balance = restTemplate.exchange(BASE_URL + "balance/" + currentUser.getUser().getId(), HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
+            balance = restTemplate.exchange(baseUrl + "balance/" + currentUser.getUser().getId(), HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
             System.out.println("Your current account balance is: $" + balance);
         } catch (RestClientException e){
             System.out.println("Error getting balance.");

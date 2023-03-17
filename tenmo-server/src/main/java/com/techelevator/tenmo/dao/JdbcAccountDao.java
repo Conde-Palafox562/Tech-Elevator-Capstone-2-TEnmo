@@ -41,7 +41,7 @@ public class JdbcAccountDao implements AccountDao {
             account = mapRowToAccount(results);
         }
 
-        return account;
+        return null;
     }
 
     @Override
@@ -54,6 +54,7 @@ public class JdbcAccountDao implements AccountDao {
         return balance;
 
     }
+
 
     @Override
     public BigDecimal getBalanceByUserId(int userId) {
