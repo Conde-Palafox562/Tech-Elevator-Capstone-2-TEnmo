@@ -13,7 +13,7 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private AuthenticatedUser currentUser;
-    private final AccountService accountService = new AccountService(API_BASE_URL, currentUser);
+    private AccountService accountService;
 
 
 
@@ -60,8 +60,11 @@ public class App {
         currentUser = authenticationService.login(credentials);
         if (currentUser == null) {
             consoleService.printErrorMessage();
+        }else{
+            accountService = new AccountService(API_BASE_URL, currentUser);
         }
     }
+
 
     private void mainMenu() {
         int menuSelection = -1;
