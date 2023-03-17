@@ -58,7 +58,13 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public BigDecimal getBalanceByUserId(int userId) {
 
-        return null;
+        String sql = "SELECT balance from account WHERE user_id = ?;";
+        SqlRowSet results = null;
+        BigDecimal balance = null;
+        results = jdbcTemplate.queryForRowSet(sql, userId);
+        balance = results.getBigDecimal("balance");
+        return balance;
+
     }
 
     public BigDecimal addToBalance(BigDecimal amount, int accountId) {

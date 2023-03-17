@@ -31,4 +31,6 @@ public class AccountController {
         return accountDao.getBalanceByAccountId(accountId);
     }
 
+    @RequestMapping(path = "/balance/{userId}", method = RequestMethod.GET)
+    public BigDecimal getBalanceByUserId(@PathVariable int userId){return accountDao.getBalanceByUserId(userId);}
 }
