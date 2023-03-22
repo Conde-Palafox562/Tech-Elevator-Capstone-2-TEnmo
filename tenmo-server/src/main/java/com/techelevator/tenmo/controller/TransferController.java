@@ -69,7 +69,7 @@ public class TransferController {
 
     @RequestMapping(path = "/request/approved", method = RequestMethod.POST)
     public String executeRequest(@RequestBody Transfer transfer) {
-        if (transfer.getAmount().compareTo(accountDao.getBalanceByAccountId(transfer.getFromAccountId())) >= 0) {
+        if (transfer.getAmount().compareTo(accountDao.getBalanceByAccountId(transfer.getFromAccountId())) <= 0) {
             transferDao.executeRequest(transfer);
             accountDao.addToBalance(transfer.getAmount(), transfer.getToAccountId());
             accountDao.subtractFromBalance(transfer.getAmount(), transfer.getFromAccountId());

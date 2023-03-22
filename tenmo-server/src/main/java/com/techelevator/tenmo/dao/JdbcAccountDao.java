@@ -67,7 +67,6 @@ public class JdbcAccountDao implements AccountDao {
             balance = results.getBigDecimal("balance");
         }
         return balance;
-
     }
 
     public BigDecimal addToBalance(BigDecimal amount, int accountId) {
